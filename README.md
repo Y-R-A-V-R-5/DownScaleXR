@@ -28,19 +28,24 @@ The primary goal of this project is to **systematically study how different down
 
 ---
 
+## Project Structure
+
+```
 DownScaleXR/
 ├─ configs/ # YAML configuration files for project & models
-│ ├─ config.yaml # Base project settings (paths, training, MLflow, etc.)
+│ ├─ config.yaml # Base project settings (paths, training, MLflow, augmentation, evaluation)
 │ ├─ models.yaml # List of model configs to iterate in experiments
 │ ├─ model_lenet_avgpool.yaml # LeNet variant with AvgPool downsampling
 │ ├─ model_lenet_maxpool.yaml # LeNet variant with MaxPool downsampling
 │ └─ model_lenet_strided.yaml # LeNet variant with strided convolutions
+│
 ├─ data/ # Dataset folder
 │ ├─ CXR/ # Raw Chest X-ray images
 │ │ ├─ train/. # Training images
 │ │ ├─ val/. # Validation images
 │ │ └─ test/. # Test images
 │ └─ processed/ # Preprocessed numpy arrays (X_.npy, y_.npy)
+│
 ├─ model/ # Checkpoints for trained models
 │ ├─ lenet_avgpool/
 │ │ └─ best_model.pt # Best checkpoint for AvgPool variant
@@ -57,13 +62,13 @@ DownScaleXR/
 │ ├─ comparision.ipynb # MLflow metrics analysis & plots
 │ └─ inference.ipynb # Inference and model comparison visualizations
 │
-├─ scripts/ # Utility scripts to run or preprocess data
+├─ scripts/ # Utility scripts to run experiments or preprocess data
 │ ├─ run.py # Main experiment runner entry point
 │ └─ data_preprocessing.py # Dataset preprocessing pipeline
 │
 ├─ src/ # Core source code
 │ ├─ data.py # Dataset manager, preprocessing, PyTorch Dataset
-│ ├─ models.py # LeNet variants and architecture builder
+│ ├─ models.py # LeNet variants and dynamic architecture builder
 │ ├─ trainer.py # Training & evaluation pipeline
 │ ├─ utils.py # Helper functions (file, image, config utilities)
 │ └─ experiments.py # ExperimentRunner for MLflow + DagsHub integration
@@ -191,6 +196,7 @@ mlflow.set_tracking_uri("https://dagshub.com/Y-R-A-V-R-5/DownScaleXR.mlflow")
 mlflow.set_experiment("DownScaleXR")
 
 ---
+
 
 
 
