@@ -10,8 +10,9 @@
 
 The study uses intentionally simple CNNs to prevent representation capacity from masking architectural behavior.
 
-This is not a model performance exercise.
-This is a mechanistic investigation of inductive bias under real deployment constraints.
+This is **not a model performance exercise**.
+This is a **mechanistic investigation of inductive bias under real deployment constraints**.
+
 ---
 
 ## Motivation
@@ -65,12 +66,12 @@ All variants share **identical depth, width, and parameter count (~11M)**.
 
 ---
 
-## Goals
+## Objectives
 
 - Quantify **performance vs bias trade-offs**
 - Measure **real CPU latency and throughput**
-- Analyze **generalization gaps under noise**
-- Ensure full experiment reproducibility via **MLflow + DagsHub**
+- Examine **generalization gaps under noise**
+- Track everything via **MLflow + DagsHub**
 
 ---
 
@@ -129,6 +130,8 @@ The test set predictions highlight differences in model behavior based on downsa
 
 - FLOPs do **not** correlate with wall-clock latency on CPU.
 - Memory access patterns and operator behavior dominate runtime.
+- All models have the same parameter count and model size.
+- Observed differences arise solely from downsampling behavior.
 
 ### Trade-offs
 
@@ -191,6 +194,25 @@ From the experiments, several architectural insights emerged:
 - **Model Comparison (Accuracy & F1 Score):**  
   ![Model Comparison](./artifacts/inference/model_comparison.png)  
 
+
+## Confusion Matrix
+
+| Model        | Output                                       |
+| ------------ | -------------------------------------------- |
+| AvgPool      | Balanced errors, conservative predictions    |
+| MaxPool      | High recall, aggressive pathology prediction |
+| Strided Conv | Similar bias to MaxPool, higher variance     |
+
+**Interpretation:** Downsampling choice directly alters class-specific error profiles under limited supervision.
+
+---
+## Architectural Conclusions
+
+ 1. Downsampling is a bias control mechanism, not a neutral operation
+ 2. Small datasets amplify pooling-induced decision bias
+ 3. Strided convolution is not inherently superior under limited data
+ 4. CPU deployment reshuffles architectural trade-offs
+
 ---
 
 ## MLflow Tracking
@@ -208,7 +230,7 @@ All experiments were logged to **DagsHub MLflow** to ensure reproducibility, all
   - Log artifacts such as plots and model checkpoints  
   - Enable side-by-side comparisons of different downsampling strategies  
 
-- **Typical Usage:**
+- **Minimal Usage:**
 
 ```python
 import mlflow
@@ -219,12 +241,6 @@ mlflow.set_tracking_uri("https://dagshub.com/Y-R-A-V-R-5/DownScaleXR.mlflow")
 # Select experiment
 mlflow.set_experiment("DownScaleXR")
 
-# Search for past runs
-experiment = mlflow.get_experiment_by_name("DownScaleXR")
-runs = mlflow.search_runs(experiment_ids=[experiment.experiment_id])
-
-# Display run metrics and parameters
-print(runs.head())
 ```
 
 ### Logged Artifacts
@@ -241,17 +257,14 @@ print(runs.head())
 
 > Using **MLflow + DagsHub** ensures reproducibility, enables easy experiment comparisons, and provides structured logging of both performance and efficiency metrics.
 
-
-
 ---
 
+## What This Project Signals
 
+This work demonstrates:
 
-
-
-
-
-
-
-
-
+ - Constraint-first thinking
+ - Architectural literacy beyond plug-and-play models
+ - Ability to isolate variables and reason about bias
+ - CPU-realistic performance evaluation
+ - Reproducible, inspectable R&D workflow
