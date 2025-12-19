@@ -1,0 +1,36 @@
+model_name: "lenet_maxpool"
+input_dims: [1, 320, 320]
+
+layers:
+  - type: Conv2d
+    in_channels: 1
+    out_channels: 6
+    kernel_size: 5
+  - type: ReLU
+
+  - type: MaxPool2d
+    kernel_size: 2
+    stride: 2
+
+  - type: Conv2d
+    in_channels: 6
+    out_channels: 16
+    kernel_size: 5
+  - type: ReLU
+
+  - type: MaxPool2d
+    kernel_size: 2
+    stride: 2
+
+  - type: Flatten
+
+  - type: Linear
+    out_features: 120
+  - type: ReLU
+
+  - type: Linear
+    out_features: 84
+  - type: ReLU
+
+  - type: Linear
+    out_features: 1

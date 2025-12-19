@@ -1,0 +1,4 @@
+models:
+  - configs/model_lenet_avgpool.yaml
+  - configs/model_lenet_maxpool.yaml
+  - configs/model_lenet_strided.yaml

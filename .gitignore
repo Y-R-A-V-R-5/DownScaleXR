@@ -1,0 +1,10 @@
+data/CXR/
+__pycache__/
+*.ipynb_checkpoints
+.vscode/
+.DS_Store
+processed/
+*.npy
+models/lenet_avgpool/*.pt
+models/lenet_maxpool/*.pt
+models/lenet_strided/*.pt

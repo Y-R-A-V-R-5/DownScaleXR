@@ -1,0 +1,59 @@
+project:
+  name: "DownScaleXR"
+  seed: 42
+  debug: false
+
+data:
+  raw_path: "data/CXR"
+  processed_path: "data/processed"
+  img_size: 320
+  channels: 1
+  classes:
+    NORMAL: 0
+    PNEUMONIA: 1
+
+training:
+  batch_size: 32
+  epochs: 25
+  lr: 0.001
+  weight_decay: 1e-4
+  early_stopping_patience: 7
+
+mlflow:
+  tracking_uri: "https://dagshub.com/Y-R-A-V-R-5/DownScaleXR.mlflow"
+  experiment_name: "DownScaleXR"
+  run_name: null
+  log_every_n_steps: 10
+
+# Minimal augmentation to preserve pooling/downsampling effects
+augmentation:
+  horizontal_flip: true
+  rotation_degree: 5
+  brightness: 0.1
+  contrast: 0.1
+
+preprocessing:
+  normalize_mean: [0.485]
+  normalize_std: [0.229]
+  equalize: false
+  sharpen: false
+  denoise: false
+
+# ---------------------------------------
+# Evaluation: Performance + Efficiency
+# ---------------------------------------
+evaluation:
+
+  performance_metrics:
+    - accuracy
+    - precision
+    - recall
+    - f1_score
+    - auc
+
+  efficiency_metrics:
+    - inference_time_ms
+    - throughput_fps
+    - model_parameters
+    - model_size_mb
+    - flops_per_inference
