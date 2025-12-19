@@ -1,31 +1,72 @@
-# DownScaleXR — Chest X-ray Downsampling & Layer Scaling Study
+# DownScaleXR — Downsampling-Induced Bias Under CPU Constraints in Chest X-ray CNNs
 
 ## Overview
 
-DownScaleXR is a lightweight, interpretable convolutional neural network (CNN) framework designed for binary classification of chest X-ray (CXR) images into **NORMAL** or **PNEUMONIA** categories.  
+**DownScaleXR** is a controlled architectural study that analyzes how **early spatial downsampling choices** influence **generalization, decision bias, and CPU inference behavior** in chest X-ray (CXR) classification.
 
-The primary goal of this project is to **systematically study how different downsampling strategies impact model performance, computational efficiency, and decision bias**, with a focus on CPU-friendly deployment.  
+The project focuses on **binary classification (NORMAL vs PNEUMONIA)** using intentionally lightweight CNNs to isolate *inductive bias introduced by downsampling*, rather than masking it behind depth, residuals, or modern architectural optimizations.
 
-### Motivation
+This is a **constraint-driven R&D study**, not a leaderboard exercise.
 
-- **Resource constraints:** Many clinical environments require models that can run efficiently on CPU-only machines.  
-- **Architectural insight:** Understanding how pooling and strided convolutions affect feature extraction and generalization.  
-- **Bias control:** Small datasets can exacerbate pooling-induced decision biases; careful architecture selection is needed.  
+---
 
-### Downsampling Strategies Explored
+## Motivation
 
-1. **AvgPool:** Smooth feature aggregation; tends to produce conservative predictions.  
-2. **MaxPool:** Aggressive feature selection; can increase recall but risk over-prediction.  
-3. **Strided Convolutions:** Learnable downsampling; may behave similarly to MaxPool on limited data.  
+This project was driven by three practical realities:
 
-### Goals
+- **CPU-only deployment**  
+  Many clinical and edge environments cannot rely on GPUs.
 
-- Evaluate predictive performance: Accuracy, F1, Precision, Recall, AUC  
-- Measure CPU efficiency: Inference time, throughput, model size, FLOPs  
-- Compare architectural trade-offs: Downsampling choice vs performance vs efficiency  
-- Log all experiments in **DagsHub MLflow** for reproducibility
+- **Noisy, limited data**  
+  Medical datasets amplify architectural bias.
 
-> “I intentionally avoided ResNet/MobileNet because skip connections and depth-wise ops dilute the effect of early downsampling choices.”
+- **Architecture literacy gap**  
+  Pooling and strided convolutions are often treated as interchangeable — **they are not**.
+
+### Core Question
+
+> **How does spatial compression itself shape decision boundaries under limited supervision and CPU constraints?**
+
+---
+
+## Architectural Scope & Design Choices
+
+To keep the study interpretable and controlled:
+
+- A **LeNet-style CNN** was used to minimize confounding factors.
+- Modern architectures (**ResNet, MobileNet, EfficientNet**) were intentionally avoided.
+- Skip connections, depth-wise convolutions, and compound scaling dilute the observable effect of early downsampling.
+
+**This project isolates downsampling behavior — not representation capacity.**
+
+---
+
+## Downsampling Strategies Studied
+
+All variants share **identical depth, width, and parameter count (~11M)**.
+
+### AvgPool
+- Smooths spatial activations  
+- Acts as an implicit regularizer  
+- Produces conservative decision boundaries  
+
+### MaxPool
+- Amplifies high-activation regions  
+- Improves recall but increases false positives  
+- Prone to pathology over-prediction  
+
+### Strided Convolutions
+- Learnable downsampling  
+- Under limited data, collapses to MaxPool-like behavior  
+
+---
+
+## Goals
+
+- Quantify **performance vs bias trade-offs**
+- Measure **real CPU latency and throughput**
+- Analyze **generalization gaps under noise**
+- Ensure full experiment reproducibility via **MLflow + DagsHub**
 
 ---
 
@@ -33,51 +74,15 @@ The primary goal of this project is to **systematically study how different down
 
 ```
 DownScaleXR/
-├─ configs/ # YAML configuration files for project & models
-│ ├─ config.yaml # Base project settings (paths, training, MLflow, augmentation, evaluation)
-│ ├─ models.yaml # List of model configs to iterate in experiments
-│ ├─ model_lenet_avgpool.yaml # LeNet variant with AvgPool downsampling
-│ ├─ model_lenet_maxpool.yaml # LeNet variant with MaxPool downsampling
-│ └─ model_lenet_strided.yaml # LeNet variant with strided convolutions
-│
-├─ data/ # Dataset folder
-│ ├─ CXR/ # Raw Chest X-ray images
-│ │ ├─ train/. # Training images
-│ │ ├─ val/. # Validation images
-│ │ └─ test/. # Test images
-│ └─ processed/ # Preprocessed numpy arrays (X_.npy, y_.npy)
-│
-├─ model/ # Checkpoints for trained models
-│ ├─ lenet_avgpool/
-│ │ └─ best_model.pt # Best checkpoint for AvgPool variant
-│ ├─ lenet_maxpool/
-│ │ └─ best_model.pt # Best checkpoint for MaxPool variant
-│ └─ lenet_strided/
-│ └─ best_model.pt # Best checkpoint for Strided variant
-│
-├─ artifacts/ # Generated figures and visualizations
-│ ├─ comparision/.png # Accuracy vs latency, model size, throughput, etc.
-│ └─ inference/.png # Side-by-side confusion matrices, ROC, P-R curves
-│
-├─ notebooks/ # Jupyter notebooks
-│ ├─ comparision.ipynb # MLflow metrics analysis & plots
-│ └─ inference.ipynb # Inference and model comparison visualizations
-│
-├─ scripts/ # Utility scripts to run experiments or preprocess data
-│ ├─ run.py # Main experiment runner entry point
-│ └─ data_preprocessing.py # Dataset preprocessing pipeline
-│
-├─ src/ # Core source code
-│ ├─ data.py # Dataset manager, preprocessing, PyTorch Dataset
-│ ├─ models.py # LeNet variants and dynamic architecture builder
-│ ├─ trainer.py # Training & evaluation pipeline
-│ ├─ utils.py # Helper functions (file, image, config utilities)
-│ └─ experiments.py # ExperimentRunner for MLflow + DagsHub integration
-│
-├─ requirements.txt # Python dependencies
-├─ .gitignore # Git ignore rules
-├─ .gitattributes # Git attributes (optional)
-└─ README.md # Project README with overview, experiments, insights
+├─ configs/ # YAML-driven experiment configuration
+├─ data/ # Raw and preprocessed CXR data
+├─ model/ # Best checkpoints per variant
+├─ artifacts/ # Metrics, plots, and inference visualizations
+├─ notebooks/ # MLflow analysis & comparison
+├─ scripts/ # Entry points and preprocessing
+├─ src/ # Core training, models, experiments
+├─ requirements.txt
+└─ README.md
 
 ```
 
@@ -235,6 +240,7 @@ print(runs.head())
 > Using **MLflow + DagsHub** ensures reproducibility, enables easy experiment comparisons, and provides structured logging of both performance and efficiency metrics.
 
 ---
+
 
 
 
