@@ -4,9 +4,9 @@
 
 **DownScaleXR** is a controlled architectural study that isolates the effect of **early spatial downsampling operators** on:
     
-    generalization under noisy supervision
-    decision bias (false positives vs false negatives)
-    CPU inference latency and stability
+ - generalization under noisy supervision
+ - decision bias (false positives vs false negatives)
+ - CPU inference latency and stability
 
 The study uses intentionally simple CNNs to prevent representation capacity from masking architectural behavior.
 
@@ -244,6 +244,7 @@ print(runs.head())
 
 
 ---
+
 
 
 
