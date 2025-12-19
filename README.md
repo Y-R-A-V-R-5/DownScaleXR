@@ -119,24 +119,22 @@ The test set predictions highlight differences in model behavior based on downsa
 
 ---
 
-## Performance vs Efficiency
+## Performance vs CPU Efficiency
 
-The models were evaluated for both predictive performance and CPU efficiency:
+### Observations
 
-- **Inference Time:**  
-  - AvgPool: Moderate speed, good balance  
-  - Strided Conv: Slightly slower than AvgPool  
-  - MaxPool: Slowest due to pooling overhead  
+- FLOPs do **not** correlate with wall-clock latency on CPU.
+- Memory access patterns and operator behavior dominate runtime.
 
-- **Throughput (FPS):**  
-  - Strided Conv: Highest throughput  
-  - AvgPool: Moderate  
-  - MaxPool: Lowest  
+### Trade-offs
 
-- **Trade-offs:**  
-  - AvgPool achieves a good balance between speed and accuracy.  
-  - MaxPool gives high F1 but at a computational cost.  
-  - Strided Conv achieves higher throughput but can propagate decision biases similar to MaxPool.  
+- **AvgPool** → Best stability–accuracy balance  
+- **MaxPool** → Highest F1, worst latency  
+- **Strided Conv** → Fast throughput, unstable bias  
+
+**CPU realism exposes architectural costs often hidden by theoretical efficiency metrics.**
+
+---
 
 ### Visual Analysis
 
@@ -239,7 +237,10 @@ print(runs.head())
 
 > Using **MLflow + DagsHub** ensures reproducibility, enables easy experiment comparisons, and provides structured logging of both performance and efficiency metrics.
 
+
+
 ---
+
 
 
 
