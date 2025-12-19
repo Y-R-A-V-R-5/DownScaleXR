@@ -2,12 +2,16 @@
 
 ## Overview
 
-**DownScaleXR** is a controlled architectural study that analyzes how **early spatial downsampling choices** influence **generalization, decision bias, and CPU inference behavior** in chest X-ray (CXR) classification.
+**DownScaleXR** is a controlled architectural study that isolates the effect of **early spatial downsampling operators** on:
+    
+    generalization under noisy supervision
+    decision bias (false positives vs false negatives)
+    CPU inference latency and stability
 
-The project focuses on **binary classification (NORMAL vs PNEUMONIA)** using intentionally lightweight CNNs to isolate *inductive bias introduced by downsampling*, rather than masking it behind depth, residuals, or modern architectural optimizations.
+The study uses intentionally simple CNNs to prevent representation capacity from masking architectural behavior.
 
-This is a **constraint-driven R&D study**, not a leaderboard exercise.
-
+This is not a model performance exercise.
+This is a mechanistic investigation of inductive bias under real deployment constraints.
 ---
 
 ## Motivation
@@ -240,6 +244,7 @@ print(runs.head())
 
 
 ---
+
 
 
 
