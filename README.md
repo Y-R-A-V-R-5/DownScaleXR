@@ -187,15 +187,53 @@ From the experiments, several architectural insights emerged:
 
 ## MLflow Tracking
 
-All experiments were logged to **DagsHub MLflow** for reproducibility and structured analysis:
+All experiments were logged to **DagsHub MLflow** to ensure reproducibility, allow easy comparison, and facilitate structured analysis.
+
+- **Tracking URI:**  
+  `https://dagshub.com/Y-R-A-V-R-5/DownScaleXR.mlflow`
+
+- **Experiment Name:**  
+  `DownScaleXR`
+
+- **Purpose:**  
+  - Store all metrics (train/validation), parameters, and tags  
+  - Log artifacts such as plots and model checkpoints  
+  - Enable side-by-side comparisons of different downsampling strategies  
+
+- **Typical Usage:**
 
 ```python
 import mlflow
 
+# Set tracking URI
 mlflow.set_tracking_uri("https://dagshub.com/Y-R-A-V-R-5/DownScaleXR.mlflow")
+
+# Select experiment
 mlflow.set_experiment("DownScaleXR")
 
+# Search for past runs
+experiment = mlflow.get_experiment_by_name("DownScaleXR")
+runs = mlflow.search_runs(experiment_ids=[experiment.experiment_id])
+
+# Display run metrics and parameters
+print(runs.head())
+
+### Logged Artifacts
+
+- **Model checkpoints:** `model/<variant>/best_model.pt`  
+- **Plots:** `artifacts/comparision/*.png` and `artifacts/inference/*.png`  
+- **Configuration files:** `configs/*.yaml`  
+
+### Logged Metrics
+
+- **Performance:** `accuracy`, `precision`, `recall`, `f1_score`, `auc`  
+- **Efficiency:** `inference_time_ms`, `throughput_fps`, `model_parameters`, `model_size_mb`  
+- **Tracking:** Metrics logged per epoch for both training and validation  
+
+> Using **MLflow + DagsHub** ensures reproducibility, enables easy experiment comparisons, and provides structured logging of both performance and efficiency metrics.
+
 ---
+
 
 
 
