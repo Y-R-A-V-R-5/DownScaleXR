@@ -1,4 +1,4 @@
-# DownScaleXR: Efficient Chest X-Ray Classification with Downscaled CNNs
+# DownScaleXR — Chest X-ray Downsampling & Layer Scaling Study
 
 ## Overview
 
@@ -91,3 +91,4 @@ All experiments are logged to **DagsHub MLflow** for reproducibility and analysi
 ```python
 mlflow.set_tracking_uri("https://dagshub.com/Y-R-A-V-R-5/DownScaleXR.mlflow")
 experiment_name = "DownScaleXR"
+
