@@ -25,6 +25,7 @@ The primary goal of this project is to **systematically study how different down
 - Compare architectural trade-offs: Downsampling choice vs performance vs efficiency  
 - Log all experiments in **DagsHub MLflow** for reproducibility
 
+> “I intentionally avoided ResNet/MobileNet because skip connections and depth-wise ops dilute the effect of early downsampling choices.”
 
 ---
 
@@ -234,6 +235,7 @@ print(runs.head())
 > Using **MLflow + DagsHub** ensures reproducibility, enables easy experiment comparisons, and provides structured logging of both performance and efficiency metrics.
 
 ---
+
 
 
 
