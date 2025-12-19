@@ -217,6 +217,7 @@ runs = mlflow.search_runs(experiment_ids=[experiment.experiment_id])
 
 # Display run metrics and parameters
 print(runs.head())
+```
 
 ### Logged Artifacts
 
@@ -233,6 +234,7 @@ print(runs.head())
 > Using **MLflow + DagsHub** ensures reproducibility, enables easy experiment comparisons, and provides structured logging of both performance and efficiency metrics.
 
 ---
+
 
 
 
