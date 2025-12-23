@@ -40,9 +40,9 @@ To keep the study interpretable and controlled:
 
 - A **LeNet-style CNN** was used to minimize confounding factors.
 - Modern architectures (**ResNet, MobileNet, EfficientNet**) were intentionally avoided.
-- Skip connections, depth-wise convolutions, and compound scaling dilute the observable effect of early downsampling.
+- Skip connections, depthwise convolutions, and compound scaling dilute the observable effect of early downsampling.
 
-**This project isolates downsampling behavior — not representation capacity.**
+**This project isolates downsampling behavior — not representational capacity.**
 
 ---
 
@@ -169,20 +169,10 @@ Key comparative plots:
 
 ## Architectural Conclusions
 
-From the experiments, several architectural insights emerged:
-
-1. **Downsampling choice is crucial for bias control:**  
-   - AvgPool → smoother features, conservative errors  
-   - MaxPool / Strided → aggressive features, prone to over-predict pathology  
-
-2. **Small datasets amplify pooling biases:**  
-   - Limited supervision exaggerates the effect of downsampling, especially for minority classes  
-
-3. **Strided convolution is not inherently superior to MaxPool:**  
-   - Behaves similarly under CPU-limited conditions and small datasets  
-
-4. **CPU-friendly models:**  
-   - All three variants remain lightweight (~11M parameters, 43 MB) and deployable in resource-constrained environments  
+ 1. Downsampling is a bias control mechanism, not a neutral operation
+ 2. Small datasets amplify pooling-induced decision bias
+ 3. Strided convolution is not inherently superior under limited data
+ 4. CPU deployment reshuffles architectural trade-offs
 
 ### Inference Visualizations
 
@@ -193,17 +183,6 @@ From the experiments, several architectural insights emerged:
 
 - **Model Comparison (Accuracy & F1 Score):**  
   ![Model Comparison](./artifacts/inference/model_comparison.png)  
-
-
-## Confusion Matrix
-
-| Model        | Output                                       |
-| ------------ | -------------------------------------------- |
-| AvgPool      | Balanced errors, conservative predictions    |
-| MaxPool      | High recall, aggressive pathology prediction |
-| Strided Conv | Similar bias to MaxPool, higher variance     |
-
-**Interpretation:** Downsampling choice directly alters class-specific error profiles under limited supervision.
 
 ---
 ## Architectural Conclusions
@@ -268,3 +247,4 @@ This work demonstrates:
  - Ability to isolate variables and reason about bias
  - CPU-realistic performance evaluation
  - Reproducible, inspectable R&D workflow
+
